@@ -1,32 +1,65 @@
 # Pterodactyl Discord Bot
 
-A powerful Discord bot for managing Pterodactyl game server panels directly from Discord. This bot allows users to start, stop, restart servers, send console commands, and manage users through intuitive slash commands.
+A powerful Discord bot for managing Pterodactyl game server panels directly from Discord. This bot allows users to start, stop, restart servers, send console commands, and manage users through intuitive slash commands with advanced monitoring, analytics, and self-hosting capabilities.
 
-## Features
+## 🌟 Features
 
 ### 🖥️ Server Management
 - **Start/Stop/Restart/Kill servers** with simple slash commands
-- **View server status** and resource usage (CPU, Memory, Disk)
+- **View server status** and real-time resource usage (CPU, Memory, Disk)
 - **Send console commands** to running servers
 - **List all accessible servers** with detailed information
+- **Server performance monitoring** with historical data
+- **Automated backup creation and restoration**
 
 ### 👥 User Management
 - **Create new Pterodactyl users** with automatic password generation
-- **List and view user information**
-- **Update existing users** (email, name, password)
-- **Delete users** (with confirmation)
+- **List and view user information** with role management
+- **Update existing users** (email, name, password, permissions)
+- **Delete users** with confirmation and audit logging
+- **Bulk user operations** for efficient management
+
+### 📊 Monitoring & Analytics
+- **Real-time resource monitoring** (CPU, Memory, Disk, Network)
+- **Performance analytics** with historical trends
+- **Server comparison tools** for optimization
+- **Custom alerts** and threshold management
+- **Automated reporting** in multiple formats (JSON, CSV, Text)
+
+### 🔔 Notifications & Automation
+- **Discord notifications** for server events
+- **Custom alert thresholds** for resource usage
+- **Scheduled tasks** and automation rules
+- **Webhook integrations** for external services
+- **Alert history** and management
+
+### 💾 Backup Management
+- **Automated backup creation** with scheduling
+- **Backup restoration** with confirmation dialogs
+- **Backup history** and metadata management
+- **Cross-server backup** operations
+- **Backup compression** and optimization
 
 ### 🔐 Security & Configuration
 - **Encrypted credential storage** using Fernet encryption
 - **Per-user configuration** with panel URL and API keys
-- **Role-based permissions** for server and user management
+- **Role-based permissions** for granular access control
 - **Comprehensive audit logging** for all actions
+- **API key rotation** and security management
 
 ### 🛡️ Admin Features
 - **Guild configuration** and role management
-- **User permission management**
-- **Audit log viewing** and filtering
+- **User permission management** with detailed controls
+- **Audit log viewing** with advanced filtering
 - **User configuration reset** capabilities
+- **System health monitoring** and diagnostics
+
+### 🛠️ Utility Tools
+- **System health checks** and diagnostics
+- **Search functionality** for servers and users
+- **Data import/export** for configuration management
+- **Secure password/token generation**
+- **Cleanup tools** for optimization
 
 ## Self-Hosting on Pterodactyl Panel
 
@@ -62,71 +95,9 @@ If you prefer manual setup, follow these steps:
    ```json
    {
      "name": "Pterodactyl Discord Bot",
-     "description": "Advanced Discord bot for Pterodactyl panel management",
-     "startup": "python bot.py",
-     "image": "ghcr.io/pterodactyl/yolks:python_3.11",
-     "variables": [
-       {
-         "name": "DISCORD_BOT_TOKEN",
-         "description": "Your Discord bot token",
-         "env_variable": "DISCORD_BOT_TOKEN",
-         "default_value": "",
-         "user_viewable": true,
-         "user_editable": true,
-         "rules": "required|string|max:128"
-       },
-       {
-         "name": "DATABASE_URL",
-         "description": "PostgreSQL database connection string",
-         "env_variable": "DATABASE_URL",
-         "default_value": "",
-         "user_viewable": true,
-         "user_editable": true,
-         "rules": "required|string|max:256"
-       },
-       {
-         "name": "DISCORD_GUILD_ID",
-         "description": "Discord server ID (optional)",
-         "env_variable": "DISCORD_GUILD_ID",
-         "default_value": "",
-         "user_viewable": true,
-         "user_editable": true,
-         "rules": "nullable|string|max:20"
-       }
-     ]
-   }
-   ```
+     "description": "Advanced Discord bot for Pterodactyl#### 🐳 Docker Deployment
 
-3. **Upload Bot Files**
-   - Upload all bot files to the egg
-   - Ensure `requirements.txt` is included
-   - Set startup command to: `python bot.py`
-
-#### Server Configuration
-
-1. **Create a New Server**
-   - Select the Discord Bot egg
-   - Allocate resources (minimum recommended):
-     - **CPU:** 1 core
-     - **Memory:** 1024 MB
-     - **Disk:** 2048 MB
-     - **Ports:** 1 (for any additional services)
-
-2. **Environment Variables**
-   ```
-   DISCORD_BOT_TOKEN=your_discord_bot_token_here
-   DATABASE_URL=postgresql://username:password@localhost:5432/ptero_bot
-   DISCORD_GUILD_ID=your_guild_id_here
-   ```
-
-3. **Startup Configuration**
-   - **Startup Command:** `python bot.py`
-   - **Docker Image:** `python:3.11-slim`
-   - **Auto-start:** Enabled
-
-#### Database Setup on Pterodactyl
-
-1. **Create PostgreSQL Database**
+**Using Docker Compose (Recommended):**
    - Use Pterodactyl's built-in database or external
    - Create database: `ptero_bot`
    - Update connection string accordingly

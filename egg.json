@@ -2,21 +2,39 @@
     "_comment": "Pterodactyl Egg Configuration for Discord Bot",
     "name": "Pterodactyl Discord Bot",
     "author": "Pterodactyl Discord Bot Team",
-    "description": "Advanced Discord bot for Pterodactyl panel management with server control, user management, monitoring, and analytics",
+    "description": "Advanced Discord bot for Pterodactyl panel management with server control, user management, monitoring, analytics, and automation capabilities",
     "features": [
-        "Discord slash commands",
-        "Server power management",
+        "Discord slash commands (30+ commands)",
+        "Server power management (start/stop/restart/kill)",
         "User creation and management",
-        "Real-time monitoring",
-        "Automated backups",
-        "Performance analytics",
-        "Secure credential storage",
-        "Role-based permissions"
+        "Real-time resource monitoring",
+        "Automated backups and restoration",
+        "Performance analytics and reporting",
+        "Secure credential storage with encryption",
+        "Role-based permissions system",
+        "Comprehensive audit logging",
+        "Automated scheduling and tasks",
+        "Discord notifications and alerts",
+        "Web interface for configuration",
+        "Multi-format data export (JSON/CSV/Text)",
+        "Health monitoring and diagnostics",
+        "Search functionality",
+        "Utility tools and cleanup"
     ],
     "docker_images": {
-        "ghcr.io/pterodactyl/yolks:python_3.11": "Python 3.11 Slim"
+        "ghcr.io/pterodactyl/yolks:python_3.11": "Python 3.11 Slim (Recommended)",
+        "python:3.11-slim": "Python 3.11 Slim (Official)",
+        "python:3.11": "Python 3.11 Standard"
     },
-    "file_denylist": [],
+    "file_denylist": [
+        "*.log",
+        "logs/",
+        "data/",
+        "__pycache__/",
+        "*.pyc",
+        ".env",
+        ".git/"
+    ],
     "startup": "python bot.py",
     "config": {
         "files": {
@@ -31,7 +49,8 @@
         },
         "startup": {
             "done": "Server is ready to accept connections",
-            "user": "You can now use Discord commands to manage your Pterodactyl panel"
+            "user": "You can now use Discord commands to manage your Pterodactyl panel",
+            "admin": "Bot is fully configured and ready for use"
         },
         "logs": {
             "custom": true,
@@ -40,15 +59,15 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n\n# Pterodactyl Discord Bot Installation Script\n\napt-get update\napt-get install -y python3 python3-pip git postgresql-client\n\npip3 install -r requirements.txt\n\necho \"Installation completed!\"\necho \"Please configure your environment variables and restart the server.\"",
-            "container": "alpine",
+            "script": "#!/bin/bash\n\n# Pterodactyl Discord Bot Installation Script\n\nset -e\n\necho \"🚀 Installing Pterodactyl Discord Bot...\"\n\n# Update system packages\napt-get update\n\n# Install system dependencies\napt-get install -y python3 python3-pip git postgresql-client curl gcc\n\n# Install Python dependencies\npip3 install --no-cache-dir -r requirements.txt\n\n# Create necessary directories\nmkdir -p logs data\n\n# Set permissions\nchmod +x scripts/setup_database.py\n\necho \"✅ Installation completed successfully!\"\necho \"📝 Please configure your environment variables in the Pterodactyl panel\"\necho \"🔧 Run database setup: python scripts/setup_database.py\"\necho \"🚀 Start the bot: python bot.py\"",
+            "container": "python:3.11-slim",
             "entrypoint": "bash"
         }
     },
     "variables": [
         {
             "name": "Discord Bot Token",
-            "description": "Your Discord application bot token from the Developer Portal",
+            "description": "Your Discord application bot token from the Developer Portal. Required for Discord API access.",
             "env_variable": "DISCORD_BOT_TOKEN",
             "default_value": "",
             "user_viewable": true,
@@ -58,7 +77,7 @@
         },
         {
             "name": "Database URL",
-            "description": "PostgreSQL database connection string for the bot",
+            "description": "PostgreSQL database connection string for the bot. Format: postgresql://user:password@host:port/database",
             "env_variable": "DATABASE_URL",
             "default_value": "postgresql://username:password@localhost:5432/ptero_bot",
             "user_viewable": true,
@@ -68,7 +87,7 @@
         },
         {
             "name": "Discord Guild ID",
-            "description": "Optional: Specific Discord server ID for command registration",
+            "description": "Optional: Specific Discord server ID for command registration. Leave empty for global registration.",
             "env_variable": "DISCORD_GUILD_ID",
             "default_value": "",
             "user_viewable": true,
@@ -78,7 +97,7 @@
         },
         {
             "name": "Bot Prefix",
-            "description": "Command prefix for the bot (if using prefix commands)",
+            "description": "Command prefix for the bot (if using prefix commands alongside slash commands)",
             "env_variable": "BOT_PREFIX",
             "default_value": "!",
             "user_viewable": true,
@@ -108,7 +127,7 @@
         },
         {
             "name": "Enable Web Interface",
-            "description": "Enable web-based configuration interface",
+            "description": "Enable web-based configuration interface for the bot",
             "env_variable": "ENABLE_WEB_INTERFACE",
             "default_value": "true",
             "user_viewable": true,
@@ -148,7 +167,7 @@
         },
         {
             "name": "Alert Threshold CPU",
-            "description": "CPU percentage that triggers alert",
+            "description": "CPU percentage that triggers alert notification",
             "env_variable": "ALERT_THRESHOLD_CPU",
             "default_value": "80",
             "user_viewable": true,
@@ -158,13 +177,33 @@
         },
         {
             "name": "Alert Threshold Memory",
-            "description": "Memory percentage that triggers alert",
+            "description": "Memory percentage that triggers alert notification",
             "env_variable": "ALERT_THRESHOLD_MEMORY",
             "default_value": "85",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|integer|between:1,100",
             "field_type": "integer"
+        },
+        {
+            "name": "Pterodactyl Panel URL",
+            "description": "Default Pterodactyl panel URL for user configurations",
+            "env_variable": "PTERODACTYL_PANEL_URL",
+            "default_value": "https://panel.example.com",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:256",
+            "field_type": "text"
+        },
+        {
+            "name": "Default API Key",
+            "description": "Default Pterodactyl Application API key (users can override)",
+            "env_variable": "PTERODACTYL_API_KEY",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:128",
+            "field_type": "text"
         }
     ],
     "server_files": [
@@ -202,6 +241,118 @@
             "source": [
                 "scripts/setup_database.py"
             ]
+        },
+        {
+            "filename": "bot/__init__.py",
+            "parser": "file",
+            "source": [
+                "bot/__init__.py"
+            ]
+        },
+        {
+            "filename": "bot/core.py",
+            "parser": "file",
+            "source": [
+                "bot/core.py"
+            ]
+        },
+        {
+            "filename": "bot/models.py",
+            "parser": "file",
+            "source": [
+                "bot/models.py"
+            ]
+        },
+        {
+            "filename": "bot/database.py",
+            "parser": "file",
+            "source": [
+                "bot/database.py"
+            ]
+        },
+        {
+            "filename": "bot/pterodactyl.py",
+            "parser": "file",
+            "source": [
+                "bot/pterodactyl.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/__init__.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/__init__.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/setup.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/setup.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/server.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/server.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/user.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/user.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/admin.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/admin.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/monitoring.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/monitoring.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/backup.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/backup.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/schedule.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/schedule.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/notifications.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/notifications.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/analytics.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/analytics.py"
+            ]
+        },
+        {
+            "filename": "bot/commands/utilities.py",
+            "parser": "file",
+            "source": [
+                "bot/commands/utilities.py"
+            ]
         }
     ],
     "version": "1.0.0",
@@ -215,13 +366,37 @@
             "cpu": 1,
             "memory": 1024,
             "disk": 2048,
-            "swap": 512
+            "swap": 512,
+            "description": "Minimum requirements for small deployments with 1-5 servers"
         },
         "recommended": {
             "cpu": 2,
             "memory": 2048,
             "disk": 4096,
-            "swap": 1024
+            "swap": 1024,
+            "description": "Recommended for medium deployments with 5-20 servers"
+        },
+        "large": {
+            "cpu": 4,
+            "memory": 4096,
+            "disk": 8192,
+            "swap": 2048,
+            "description": "For large deployments with 20+ servers and heavy monitoring"
         }
+    },
+    "egg_features": {
+        "auto_backup": true,
+        "monitoring": true,
+        "analytics": true,
+        "web_interface": true,
+        "multi_user": true,
+        "role_permissions": true,
+        "audit_logging": true,
+        "encrypted_storage": true,
+        "api_integration": true,
+        "scheduled_tasks": true,
+        "notifications": true,
+        "health_checks": true,
+        "performance_metrics": true
     }
 }

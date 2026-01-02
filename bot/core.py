@@ -12,6 +12,12 @@ from bot.commands.setup import SetupCommands
 from bot.commands.server import ServerCommands
 from bot.commands.user import UserCommands
 from bot.commands.admin import AdminCommands
+from bot.commands.monitoring import MonitoringCommands
+from bot.commands.backup import BackupCommands
+from bot.commands.schedule import ScheduleCommands, AutomationCommands
+from bot.commands.notifications import NotificationCommands, AlertCommands
+from bot.commands.analytics import AnalyticsCommands
+from bot.commands.utilities import UtilityCommands
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -44,6 +50,14 @@ class PteroBot(commands.Bot):
         await self.add_cog(ServerCommands(self))
         await self.add_cog(UserCommands(self))
         await self.add_cog(AdminCommands(self))
+        await self.add_cog(MonitoringCommands(self))
+        await self.add_cog(BackupCommands(self))
+        await self.add_cog(ScheduleCommands(self))
+        await self.add_cog(AutomationCommands(self))
+        await self.add_cog(NotificationCommands(self))
+        await self.add_cog(AlertCommands(self))
+        await self.add_cog(AnalyticsCommands(self))
+        await self.add_cog(UtilityCommands(self))
         
         # Sync commands globally or to specific guild
         guild_id = os.getenv('DISCORD_GUILD_ID')

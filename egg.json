@@ -1,0 +1,227 @@
+{
+    "_comment": "Pterodactyl Egg Configuration for Discord Bot",
+    "name": "Pterodactyl Discord Bot",
+    "author": "Pterodactyl Discord Bot Team",
+    "description": "Advanced Discord bot for Pterodactyl panel management with server control, user management, monitoring, and analytics",
+    "features": [
+        "Discord slash commands",
+        "Server power management",
+        "User creation and management",
+        "Real-time monitoring",
+        "Automated backups",
+        "Performance analytics",
+        "Secure credential storage",
+        "Role-based permissions"
+    ],
+    "docker_images": {
+        "ghcr.io/pterodactyl/yolks:python_3.11": "Python 3.11 Slim"
+    },
+    "file_denylist": [],
+    "startup": "python bot.py",
+    "config": {
+        "files": {
+            "bot.py": {
+                "parser": "file",
+                "find": {
+                    "bot.py": {
+                        "parser": "python"
+                    }
+                }
+            }
+        },
+        "startup": {
+            "done": "Server is ready to accept connections",
+            "user": "You can now use Discord commands to manage your Pterodactyl panel"
+        },
+        "logs": {
+            "custom": true,
+            "location": "logs/"
+        }
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\n\n# Pterodactyl Discord Bot Installation Script\n\napt-get update\napt-get install -y python3 python3-pip git postgresql-client\n\npip3 install -r requirements.txt\n\necho \"Installation completed!\"\necho \"Please configure your environment variables and restart the server.\"",
+            "container": "alpine",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Discord Bot Token",
+            "description": "Your Discord application bot token from the Developer Portal",
+            "env_variable": "DISCORD_BOT_TOKEN",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:128",
+            "field_type": "text"
+        },
+        {
+            "name": "Database URL",
+            "description": "PostgreSQL database connection string for the bot",
+            "env_variable": "DATABASE_URL",
+            "default_value": "postgresql://username:password@localhost:5432/ptero_bot",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:256",
+            "field_type": "text"
+        },
+        {
+            "name": "Discord Guild ID",
+            "description": "Optional: Specific Discord server ID for command registration",
+            "env_variable": "DISCORD_GUILD_ID",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Bot Prefix",
+            "description": "Command prefix for the bot (if using prefix commands)",
+            "env_variable": "BOT_PREFIX",
+            "default_value": "!",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:5",
+            "field_type": "text"
+        },
+        {
+            "name": "Log Level",
+            "description": "Logging level for the bot (DEBUG, INFO, WARNING, ERROR)",
+            "env_variable": "LOG_LEVEL",
+            "default_value": "INFO",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:DEBUG,INFO,WARNING,ERROR",
+            "field_type": "select"
+        },
+        {
+            "name": "Max Servers Per User",
+            "description": "Maximum number of Pterodactyl servers a user can manage",
+            "env_variable": "MAX_SERVERS_PER_USER",
+            "default_value": "10",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1,50",
+            "field_type": "integer"
+        },
+        {
+            "name": "Enable Web Interface",
+            "description": "Enable web-based configuration interface",
+            "env_variable": "ENABLE_WEB_INTERFACE",
+            "default_value": "true",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "boolean"
+        },
+        {
+            "name": "Web Port",
+            "description": "Port for the web interface (if enabled)",
+            "env_variable": "WEB_PORT",
+            "default_value": "8080",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1024,65535",
+            "field_type": "integer"
+        },
+        {
+            "name": "Auto Backup Interval",
+            "description": "Hours between automatic backups (0 to disable)",
+            "env_variable": "AUTO_BACKUP_INTERVAL",
+            "default_value": "24",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:0,168",
+            "field_type": "integer"
+        },
+        {
+            "name": "Enable Monitoring",
+            "description": "Enable real-time server monitoring and alerts",
+            "env_variable": "ENABLE_MONITORING",
+            "default_value": "true",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "boolean"
+        },
+        {
+            "name": "Alert Threshold CPU",
+            "description": "CPU percentage that triggers alert",
+            "env_variable": "ALERT_THRESHOLD_CPU",
+            "default_value": "80",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1,100",
+            "field_type": "integer"
+        },
+        {
+            "name": "Alert Threshold Memory",
+            "description": "Memory percentage that triggers alert",
+            "env_variable": "ALERT_THRESHOLD_MEMORY",
+            "default_value": "85",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1,100",
+            "field_type": "integer"
+        }
+    ],
+    "server_files": [
+        {
+            "filename": "bot.py",
+            "parser": "python",
+            "source": [
+                "bot.py"
+            ]
+        },
+        {
+            "filename": "requirements.txt",
+            "parser": "file",
+            "source": [
+                "requirements.txt"
+            ]
+        },
+        {
+            "filename": "README.md",
+            "parser": "file",
+            "source": [
+                "README.md"
+            ]
+        },
+        {
+            "filename": "alembic.ini",
+            "parser": "file",
+            "source": [
+                "alembic.ini"
+            ]
+        },
+        {
+            "filename": "scripts/setup_database.py",
+            "parser": "file",
+            "source": [
+                "scripts/setup_database.py"
+            ]
+        }
+    ],
+    "version": "1.0.0",
+    "supported_oses": [
+        "alpine",
+        "ubuntu",
+        "debian"
+    ],
+    "recommended_specs": {
+        "minimum": {
+            "cpu": 1,
+            "memory": 1024,
+            "disk": 2048,
+            "swap": 512
+        },
+        "recommended": {
+            "cpu": 2,
+            "memory": 2048,
+            "disk": 4096,
+            "swap": 1024
+        }
+    }
+}

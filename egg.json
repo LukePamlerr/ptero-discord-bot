@@ -1,5 +1,4 @@
 {
-    "_comment": "Pterodactyl Egg Configuration for Discord Bot",
     "name": "Pterodactyl Discord Bot",
     "author": "Pterodactyl Discord Bot Team",
     "description": "Advanced Discord bot for Pterodactyl panel management with server control, user management, monitoring, analytics, and automation capabilities",
@@ -59,7 +58,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n\n# Pterodactyl Discord Bot Installation Script\n\nset -e\n\necho \"🚀 Installing Pterodactyl Discord Bot...\"\n\n# Update system packages\napt-get update\n\n# Install system dependencies\napt-get install -y python3 python3-pip git postgresql-client curl gcc\n\n# Install Python dependencies\npip3 install --no-cache-dir -r requirements.txt\n\n# Create necessary directories\nmkdir -p logs data\n\n# Set permissions\nchmod +x scripts/setup_database.py\n\necho \"✅ Installation completed successfully!\"\necho \"📝 Please configure your environment variables in the Pterodactyl panel\"\necho \"🔧 Run database setup: python scripts/setup_database.py\"\necho \"🚀 Start the bot: python bot.py\"",
+            "script": "#!/bin/bash\n\n# Pterodactyl Discord Bot Installation Script\n\nset -e\n\necho \"🚀 Installing Pterodactyl Discord Bot...\"\n\n# Update system packages\napt-get update\n\n# Install system dependencies\napt-get install -y python3 python3-pip git postgresql-client curl gcc\n\n# Install Python dependencies\npip3 install --no-cache-dir -r requirements.txt\n\n# Create necessary directories\nmkdir -p logs data\n\n# Set permissions\nchmod +x scripts/setup_database.py\n\necho \"✅ Installation completed successfully!\"\necho \"📝 Please configure your environment variables in Pterodactyl panel\"\necho \"🔧 Run database setup: python scripts/setup_database.py\"\necho \"🚀 Start the bot: python bot.py\"",
             "container": "python:3.11-slim",
             "entrypoint": "bash"
         }
@@ -67,7 +66,7 @@
     "variables": [
         {
             "name": "Discord Bot Token",
-            "description": "Your Discord application bot token from the Developer Portal. Required for Discord API access.",
+            "description": "Your Discord application bot token from Developer Portal. Required for Discord API access.",
             "env_variable": "DISCORD_BOT_TOKEN",
             "default_value": "",
             "user_viewable": true,
@@ -77,7 +76,7 @@
         },
         {
             "name": "Database URL",
-            "description": "PostgreSQL database connection string for the bot. Format: postgresql://user:password@host:port/database",
+            "description": "PostgreSQL database connection string for bot. Format: postgresql://user:password@host:port/database",
             "env_variable": "DATABASE_URL",
             "default_value": "postgresql://username:password@localhost:5432/ptero_bot",
             "user_viewable": true,
@@ -97,7 +96,7 @@
         },
         {
             "name": "Bot Prefix",
-            "description": "Command prefix for the bot (if using prefix commands alongside slash commands)",
+            "description": "Command prefix for bot (if using prefix commands alongside slash commands)",
             "env_variable": "BOT_PREFIX",
             "default_value": "!",
             "user_viewable": true,
@@ -107,7 +106,7 @@
         },
         {
             "name": "Log Level",
-            "description": "Logging level for the bot (DEBUG, INFO, WARNING, ERROR)",
+            "description": "Logging level for bot (DEBUG, INFO, WARNING, ERROR)",
             "env_variable": "LOG_LEVEL",
             "default_value": "INFO",
             "user_viewable": true,
@@ -127,7 +126,7 @@
         },
         {
             "name": "Enable Web Interface",
-            "description": "Enable web-based configuration interface for the bot",
+            "description": "Enable web-based configuration interface for bot",
             "env_variable": "ENABLE_WEB_INTERFACE",
             "default_value": "true",
             "user_viewable": true,
@@ -137,7 +136,7 @@
         },
         {
             "name": "Web Port",
-            "description": "Port for the web interface (if enabled)",
+            "description": "Port for web interface (if enabled)",
             "env_variable": "WEB_PORT",
             "default_value": "8080",
             "user_viewable": true,

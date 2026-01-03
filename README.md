@@ -65,33 +65,41 @@ A powerful Discord bot for managing Pterodactyl game server panels directly from
 
 ### 📋 Deploying on Your Existing Pterodactyl Panel
 
-If you already have a Pterodactyl panel, you can easily deploy the Discord bot using the built-in Python egg. This keeps everything in one place and leverages your existing infrastructure.
+If you already have a Pterodactyl panel, you can easily deploy the Discord bot using the Python egg. This keeps everything in one place and leverages your existing infrastructure.
 
 #### 🚀 Quick Setup Guide
 
-**Step 1: Create a New Nest**
-1. Login to your Pterodactyl admin panel
-2. Navigate to **Admin → Nests**
-3. Click **Create New Nest**
-4. **Name:** `Discord Bot`
-5. **Description:** `Pterodactyl Discord Bot for server management`
-6. **Docker Image:** `python:3.11-slim`
+**Step 1: Check for Python Egg**
+First, check if you already have the Python egg installed:
+- Go to **Admin → Nests**
+- Look for "Python" or "Generic Python" nest
+- If you see it, you can skip to Step 3
 
-**Step 2: Create the Egg**
-1. In your new nest, click **Create New Egg**
-2. **Name:** `Pterodactyl Discord Bot`
-3. **Description:** `Advanced Discord bot for Pterodactyl panel management`
-4. **Docker Image:** `ghcr.io/pterodactyl/yolks:python_3.11`
-5. **Startup Command:** `python bot.py`
+**Step 2: Install Python Egg (If Needed)**
+If you don't have the Python egg, install it:
+1. Download the Python egg from: https://github.com/pterodactyl/generic-eggs/blob/main/python/egg-python-generic.json
+2. Go to **Admin → Nests → Import Egg**
+3. Upload the downloaded `egg-python-generic.json` file
+4. This will create a "Python" nest with the generic Python egg
 
-**Step 3: Configure Egg Variables**
-Add these environment variables to your egg:
+**Step 3: Create Discord Bot Server**
+1. Navigate to **Servers → Create New Server**
+2. Select the "Python" nest and "Generic Python" egg
+3. **Server Settings:**
+   - **Name:** `Pterodactyl Discord Bot`
+   - **Memory:** 1024MB (minimum), 2048MB (recommended)
+   - **CPU:** 1 core (minimum), 2 cores (recommended)
+   - **Disk:** 2GB (minimum), 4GB (recommended)
+   - **Database:** Create a new PostgreSQL database
 
-| Variable | Description | Default | Required |
+**Step 4: Configure Environment Variables**
+Set these environment variables in your server settings:
+
+| Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
-| `DISCORD_BOT_TOKEN` | Discord bot token from Developer Portal | - | ✅ |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://username:password@localhost:5432/ptero_bot` | ✅ |
-| `DISCORD_GUILD_ID` | Discord server ID (optional) | - | ❌ |
+| `DISCORD_BOT_TOKEN` | Discord bot token from Developer Portal | `abcd1234...` | ✅ |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/db` | ✅ |
+| `DISCORD_GUILD_ID` | Discord server ID (optional) | `123456789012345678` | ❌ |
 | `BOT_PREFIX` | Command prefix | `!` | ❌ |
 | `LOG_LEVEL` | Logging level | `INFO` | ❌ |
 | `ENABLE_WEB_INTERFACE` | Enable web interface | `true` | ❌ |
@@ -99,7 +107,7 @@ Add these environment variables to your egg:
 | `ENABLE_MONITORING` | Enable monitoring | `true` | ❌ |
 | `MAX_SERVERS_PER_USER` | Server limit per user | `10` | ❌ |
 
-**Step 4: Upload Bot Files**
+**Step 5: Upload Bot Files**
 1. Download the bot source code from GitHub
 2. **Required files to upload:**
    - `bot.py` (main entry point)
@@ -110,21 +118,6 @@ Add these environment variables to your egg:
 
 3. Upload these files through the Pterodactyl file manager or SFTP
 
-**Step 5: Create and Configure Server**
-1. Navigate to **Servers → Create New Server**
-2. Select your "Discord Bot" nest and egg
-3. **Server Settings:**
-   - **Name:** `Pterodactyl Discord Bot`
-   - **Memory:** 1024MB (minimum), 2048MB (recommended)
-   - **CPU:** 1 core (minimum), 2 cores (recommended)
-   - **Disk:** 2GB (minimum), 4GB (recommended)
-   - **Database:** Create a new PostgreSQL database
-
-4. **Set Environment Variables:**
-   - `DISCORD_BOT_TOKEN`: Your Discord bot token
-   - `DATABASE_URL`: Your Pterodactyl database connection string
-   - `DISCORD_GUILD_ID`: Your Discord server ID (optional)
-
 **Step 6: Start the Bot**
 1. Click **Start Server**
 2. Monitor the console for startup logs
@@ -132,23 +125,14 @@ Add these environment variables to your egg:
 
 #### 🔧 Database Setup
 
-**Option 1: Use Pterodactyl's Built-in Database**
-```sql
--- Database will be automatically created by Pterodactyl
--- Just use the connection string provided in the server settings
-```
-
-**Option 2: External Database**
-```bash
-# Create database manually
-CREATE DATABASE ptero_bot;
-CREATE USER ptero_bot_user WITH PASSWORD 'secure_password';
-GRANT ALL PRIVILEGES ON DATABASE ptero_bot TO ptero_bot_user;
-```
+**Use Pterodactyl's Built-in Database:**
+- Database will be automatically created by Pterodactyl
+- Use the connection string provided in the server settings
+- Format: `postgresql://pterodactyl:password@localhost:5432/database_name`
 
 **Run Database Migrations:**
 ```bash
-# SSH into your server or use the Pterodactyl console
+# Use the Pterodactyl console or SSH
 python -m alembic upgrade head
 ```
 

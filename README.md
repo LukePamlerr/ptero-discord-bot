@@ -493,7 +493,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🆘 Support
 
-- **Discord Server:** [Join our community](https://discord.gg/your-server)
+- **Discord Server:** [Join our community](https://discord.gg/4j7PDpjgCS)
 - **GitHub Issues:** [Report bugs](https://github.com/your-repo/issues)
 - **Documentation:** [Full docs](https://lukepamlerr.github.io/ptero-discord-bot/)
 

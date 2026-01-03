@@ -1,6 +1,6 @@
 {
     "name": "Pterodactyl Discord Bot",
-    "author": "Pterodactyl Discord Bot Team",
+    "author": "Pterodactyl Discord Bot Team", 
     "description": "Advanced Discord bot for Pterodactyl panel management",
     "startup": "python bot.py",
     "image": "ghcr.io/pterodactyl/yolks:python_3.11",
@@ -15,7 +15,7 @@
             "rules": "required|string|max:128"
         },
         {
-            "name": "Database URL",
+            "name": "Database URL", 
             "description": "PostgreSQL database connection string",
             "env_variable": "DATABASE_URL",
             "default_value": "postgresql://username:password@localhost:5432/ptero_bot",
@@ -26,7 +26,7 @@
         {
             "name": "Discord Guild ID",
             "description": "Discord server ID (optional)",
-            "env_variable": "DISCORD_GUILD_ID",
+            "env_variable": "DISCORD_GUILD_ID", 
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,

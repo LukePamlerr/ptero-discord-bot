@@ -61,378 +61,261 @@ A powerful Discord bot for managing Pterodactyl game server panels directly from
 - **Secure password/token generation**
 - **Cleanup tools** for optimization
 
-## Self-Hosting on Pterodactyl Panel
+## 🚀 Deployment Options
 
-### 🥚 Deploying the Bot on Your Pterodactyl Panel
+### 🐳 Docker Deployment
 
-You can deploy this Discord bot directly on your Pterodactyl panel using a custom egg. This eliminates the need for separate hosting and keeps everything in one place.
-
-#### Quick Deployment Option
-
-**🚀 Automated Deployment Script:**
+**📦 Quick Start with Docker Compose:**
 ```bash
-# Run our automated deployment tool
-python scripts/deploy_pterodactyl.py
+# Build the image
+docker build -t ptero-discord-bot .
+
+# Run with environment variables
+docker run -d \
+  --name ptero-discord-bot \
+  -e DISCORD_BOT_TOKEN="your_token_here" \
+  -e DATABASE_URL="postgresql://user:pass@host:5432/db" \
+  -e DISCORD_GUILD_ID="your_guild_id" \
+  ptero-discord-bot
 ```
 
-This script will automatically:
-- ✅ Create the Discord Bot nest
-- ✅ Create the custom egg configuration  
-- ✅ Upload all necessary files
-- ✅ Generate deployment scripts
-- ✅ Provide step-by-step instructions
+### ☸️ Kubernetes Deployment
 
-#### Manual Deployment Steps
-
-If you prefer manual setup, follow these steps:
-
-1. **Navigate to Admin → Nests → Create New Nest**
-   - **Name:** Discord Bot
-   - **Description:** Pterodactyl Discord Bot for server management
-   - **Docker Image:** `python:3.11-slim`
-
-2. **Create a New Egg in the Nest**
-   ```json
-   {
-     "name": "Pterodactyl Discord Bot",
-     "description": "Advanced Discord bot for Pterodactyl#### 🐳 Docker Deployment
-
-**Using Docker Compose (Recommended):**
-   - Use Pterodactyl's built-in database or external
-   - Create database: `ptero_bot`
-   - Update connection string accordingly
-
-2. **Run Database Migrations**
-   ```bash
-   # SSH into your server
-   python scripts/setup_database.py
-   ```
-
-#### Benefits of Self-Hosting
-
-✅ **Advantages:**
-- **Single Platform:** Everything runs on your Pterodactyl panel
-- **Resource Efficiency:** Shared resources with existing infrastructure
-- **Simplified Management:** One control panel for everything
-- **Cost Effective:** No additional hosting costs
-- **Integrated Monitoring:** Use Pterodactyl's built-in metrics
-- **Auto-scaling:** Leverage Pterodactyl's resource management
-
-✅ **Features Available:**
-- All Discord bot functionality
-- Web interface for configuration
-- Automatic restarts on crashes
-- Resource monitoring through Pterodactyl
-- Backup integration with Pterodactyl's system
-- SSL termination through Pterodactyl
-
-#### Advanced Configuration
-
-##### Custom Domain Setup
-```nginx
-server {
-    listen 80;
-    server_name your-bot-domain.com;
-    
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+```yaml
+# k8s-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ptero-discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ptero-discord-bot
+  template:
+    metadata:
+      labels:
+        app: ptero-discord-bot
+    spec:
+      containers:
+      - name: bot
+        image: ptero-discord-bot:latest
+        env:
+        - name: DISCORD_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: bot-secrets
+              key: discord-token
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: bot-secrets
+              key: database-url
 ```
 
-##### SSL Certificate
-- Use Pterodactyl's built-in SSL
-- Or upload custom certificates
-- Automatic renewal available
+### 🌐 Cloud Platform Deployment
 
-##### Performance Optimization
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    postgresql-client
-
-# Copy requirements and install Python packages
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY . .
-
-# Create non-root user
-RUN useradd -m -u 1000 bot
-USER bot
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8080/health')"
-
-EXPOSE 8080
-
-CMD ["python", "bot.py"]
-```
-
-#### Monitoring and Logging
-
-##### Pterodactyl Integration
-- **Logs:** View through Pterodactyl console
-- **Metrics:** Use Pterodactyl's resource graphs
-- **Alerts:** Configure through Pterodactyl alerts
-- **Backups:** Leverage Pterodactyl's backup system
-
-##### Custom Monitoring
-```python
-# Add to bot.py for health endpoint
-from flask import Flask, jsonify
-
-app = Flask(__name__)
-
-@app.route('/health')
-def health_check():
-    return jsonify({
-        'status': 'healthy',
-        'timestamp': datetime.datetime.now().isoformat(),
-        'version': '1.0.0'
-    })
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
-```
-
-#### Troubleshooting Self-Hosting
-
-##### Common Issues
-
-1. **Bot Won't Start**
-   - Check environment variables
-   - Verify database connection
-   - Review Pterodactyl console logs
-
-2. **Database Connection Failed**
-   - Ensure PostgreSQL is running
-   - Check connection string format
-   - Verify firewall settings
-
-3. **Discord Connection Issues**
-   - Validate bot token
-   - Check Discord API status
-   - Verify guild permissions
-
-4. **Performance Issues**
-   - Increase allocated resources
-   - Optimize database queries
-   - Enable caching
-
-##### Debug Mode
+**🟣 Heroku:**
 ```bash
-# Enable debug logging
-export DEBUG=true
+# Install Heroku CLI and login
+heroku create ptero-discord-bot
+heroku config:set DISCORD_BOT_TOKEN="your_token"
+heroku config:set DATABASE_URL="your_database_url"
+git push heroku main
+```
+
+**🔵 DigitalOcean:**
+```bash
+# Create droplet and deploy
+doctl compute droplet create ptero-bot \
+  --image ubuntu-22-04-x64 \
+  --size s-2vcpu-4gb \
+  --region nyc1
+```
+
+**🟠 AWS ECS:**
+```bash
+# Push to ECR and deploy
+aws ecr get-login-password | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
+docker tag ptero-discord-bot:latest <account-id>.dkr.ecr.<region>.amazonaws.com/ptero-discord-bot:latest
+docker push <account-id>.dkr.ecr.<region>.amazonaws.com/ptero-discord-bot:latest
+```
+
+## 📋 Configuration Management
+
+### 🔑 Environment Variables
+
+**Required Variables:**
+- `DISCORD_BOT_TOKEN` - Discord bot token from Developer Portal
+- `DATABASE_URL` - PostgreSQL connection string
+- `DISCORD_GUILD_ID` - Discord server ID (optional, for guild-specific commands)
+
+**Optional Variables:**
+- `BOT_PREFIX` - Command prefix (default: `!`)
+- `LOG_LEVEL` - Logging level (DEBUG, INFO, WARNING, ERROR)
+- `MAX_SERVERS_PER_USER` - Server limit per user (default: 10)
+- `ENABLE_WEB_INTERFACE` - Enable web interface (default: true)
+- `WEB_PORT` - Web interface port (default: 8080)
+- `AUTO_BACKUP_INTERVAL` - Backup interval in hours (default: 24)
+- `ENABLE_MONITORING` - Enable monitoring (default: true)
+- `ALERT_THRESHOLD_CPU` - CPU alert threshold (default: 80)
+- `ALERT_THRESHOLD_MEMORY` - Memory alert threshold (default: 85)
+
+### 🗄️ Database Setup
+
+**PostgreSQL Configuration:**
+```sql
+-- Create database
+CREATE DATABASE ptero_bot;
+
+-- Create user
+CREATE USER ptero_bot_user WITH PASSWORD 'secure_password';
+GRANT ALL PRIVILEGES ON DATABASE ptero_bot TO ptero_bot_user;
+```
+
+**Run Database Migrations:**
+```bash
+# Initialize database
+python scripts/setup_database.py
+
+# Run migrations
+alembic upgrade head
+```
+
+## 🛠️ Available Commands
+
+### 🖥️ Server Commands
+- `/server list` - List all accessible servers
+- `/server status <server>` - View server status and resources
+- `/server start <server>` - Start a server
+- `/server stop <server>` - Stop a server
+- `/server restart <server>` - Restart a server
+- `/server kill <server>` - Force kill a server
+- `/server command <server> <command>` - Send console command
+
+### 👥 User Commands
+- `/user create <email> <username>` - Create new user
+- `/user list` - List all users
+- `/user info <user>` - View user details
+- `/user update <user> <field> <value>` - Update user
+- `/user delete <user>` - Delete user
+
+### 📊 Monitoring Commands
+- `/monitor status <server>` - Real-time monitoring
+- `/monitor alerts` - View active alerts
+- `/monitor history <server>` - View historical data
+- `/monitor set_threshold <type> <value>` - Set alert thresholds
+
+### 💾 Backup Commands
+- `/backup create <server>` - Create backup
+- `/backup list` - List all backups
+- `/backup restore <backup>` - Restore backup
+- `/backup delete <backup>` - Delete backup
+
+### 📈 Analytics Commands
+- `/analytics overview` - Server overview
+- `/analytics usage <server>` - Usage statistics
+- `/analytics compare <server1> <server2>` - Compare servers
+- `/analytics report <format>` - Generate report
+
+### 🔔 Notification Commands
+- `/notification setup <webhook>` - Setup notifications
+- `/notification test` - Test notifications
+- `/notification disable` - Disable notifications
+
+### ⚙️ Schedule Commands
+- `/schedule create <name> <cron> <action>` - Create schedule
+- `/schedule list` - List schedules
+- `/schedule delete <schedule>` - Delete schedule
+
+### 🛠️ Utility Commands
+- `/utility ping` - Check bot latency
+- `/utility health` - System health check
+- `/utility search <query>` - Search servers/users
+- `/utility export <format>` - Export data
+- `/utility import <data>` - Import data
+- `/utility cleanup` - Cleanup old data
+- `/utility generate <type>` - Generate passwords/tokens
+
+### 🔐 Admin Commands
+- `/admin config` - View guild configuration
+- `/admin permissions <user> <role>` - Manage permissions
+- `/admin audit` - View audit logs
+- `/admin reset <user>` - Reset user configuration
+
+## 🔒 Security Features
+
+### 🛡️ Encryption & Security
+- **Fernet encryption** for sensitive data storage
+- **API key rotation** support
+- **Role-based permissions** with granular controls
+- **Comprehensive audit logging** for all actions
+- **Secure credential management** with environment variables
+
+### 👥 Access Control
+- **Per-user configuration** isolation
+- **Guild-based permissions** system
+- **Admin-only commands** protection
+- **User role verification** before actions
+
+## 🐛 Troubleshooting
+
+### 🔧 Common Issues
+
+**Bot Not Responding:**
+- Check Discord bot token is valid
+- Verify bot has proper permissions
+- Ensure database connection is working
+
+**Database Connection Errors:**
+- Verify DATABASE_URL format
+- Check PostgreSQL service status
+- Ensure proper database permissions
+
+**Pterodactyl API Errors:**
+- Verify API key permissions
+- Check panel URL accessibility
+- Ensure user has server access
+
+**Memory Issues:**
+- Increase server memory allocation
+- Check for memory leaks in bot
+- Monitor resource usage
+
+### 📝 Debug Mode
+
+Enable debug logging:
+```bash
+export LOG_LEVEL=DEBUG
 python bot.py
 ```
 
-#### Security Considerations
-
-✅ **Best Practices:**
-- **Environment Variables:** Never commit tokens to git
-- **Database Security:** Use strong passwords
-- **Network Security:** Configure firewall rules
-- **SSL:** Always use HTTPS
-- **Updates:** Keep dependencies updated
-
-✅ **Access Control:**
-- **Bot Permissions:** Principle of least privilege
-- **Database Access:** Restricted IPs only
-- **Admin Access:** Multi-factor authentication
-- **API Keys:** Regular rotation
-
-## Quick Setup
-
-### Prerequisites
-- Python 3.8 or higher
-- PostgreSQL database
-- Pterodactyl panel with Application API access
-- Discord bot token
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ptero-discord-bot
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` with your configuration:
-   ```env
-   DISCORD_BOT_TOKEN=your_discord_bot_token_here
-   DISCORD_CLIENT_ID=your_discord_client_id_here
-   DISCORD_GUILD_ID=your_discord_guild_id_here
-   DATABASE_URL=postgresql://username:password@localhost:5432/ptero_bot
-   PTERODACTYL_PANEL_URL=your_ptero_panel_url_here
-   PTERODACTYL_API_KEY=your_ptero_api_key_here
-   ```
-
-4. **Create database**
-   ```sql
-   CREATE DATABASE ptero_bot;
-   ```
-
-5. **Run the bot**
-   ```bash
-   python bot.py
-   ```
-
-### Discord Bot Setup
-
-1. **Create a Discord Application**
-   - Go to [Discord Developer Portal](https://discord.com/developers/applications)
-   - Create a new application
-   - Add a bot to the application
-
-2. **Configure Bot Permissions**
-   - Enable Server Members Intent
-   - Enable Message Content Intent
-   - Copy the bot token
-
-3. **Invite Bot to Server**
-   - Generate an OAuth2 URL with these permissions:
-     - `applications.commands`
-     - `bot`
-     - `administrator` (recommended for full functionality)
-
-## Usage
-
-### Initial Setup (Server Admin)
-1. Use `/setup` to configure the bot for your server
-2. Set an admin role (optional, defaults to server administrators)
-
-### User Configuration
-Each user must configure their own Pterodactyl panel:
-
-```
-/config setup panel_url:https://panel.example.com api_key:your_api_key
-```
-
-### Server Commands
-```
-/server list                    # List all your servers
-/server info server_identifier  # Get detailed server info
-/server start server_identifier # Start a server
-/server stop server_identifier  # Stop a server
-/server restart server_identifier # Restart a server
-/server kill server_identifier  # Force kill a server
-/server command server_identifier "say Hello World" # Send console command
-```
-
-### User Management Commands
-```
-/user create username email first_name last_name [password]  # Create user
-/user list                    # List all users
-/user info user_identifier    # Get user information
-/user update user_identifier [email] [first_name] [last_name] [password]  # Update user
-/user delete user_identifier DELETE  # Delete user (requires confirmation)
-```
-
-### Admin Commands
-```
-/admin status                 # Bot status and statistics
-/admin users                  # List configured users
-/admin audit [limit] [user_id] [action]  # View audit logs
-/admin permissions @user [can_manage_servers] [can_create_users] [max_servers]  # Modify permissions
-/admin reset @user RESET      # Reset user configuration
-```
-
-## Security Features
-
-### Encryption
-- All sensitive data (panel URLs, API keys) are encrypted using Fernet symmetric encryption
-- Encryption keys are stored securely in environment variables
-- Database contains only encrypted sensitive information
-
-### Permissions
-- Role-based access control
-- Per-user permission settings
-- Audit logging for all actions
-
-### API Security
-- Validates Pterodactyl API credentials during setup
-- Secure HTTP requests with proper error handling
-- No credential exposure in logs or responses
-
-## Database Schema
-
-The bot uses PostgreSQL with the following main tables:
-- `guild_configs` - Server-specific settings
-- `user_configs` - User Pterodactyl configurations (encrypted)
-- `server_configs` - Linked server information
-- `audit_logs` - Action logging and tracking
-
-## Pterodactyl API Integration
-
-The bot integrates with the Pterodactyl Application API to provide:
-- Server power management (start/stop/restart/kill)
-- Resource monitoring (CPU, memory, disk usage)
-- Console command execution
-- User management operations
-- Server and user information retrieval
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Bot won't start**
-   - Check environment variables are set correctly
-   - Verify database connection string
-   - Ensure Discord bot token is valid
-
-2. **API connection fails**
-   - Verify Pterodactyl panel URL is accessible
-   - Check API key has Application API permissions
-   - Ensure API key is not expired
-
-3. **Commands not working**
-   - Verify bot has proper Discord permissions
-   - Check user has configured their panel
-   - Review audit logs for error details
-
-### Debug Mode
-Enable debug logging by setting the log level:
-```python
-logging.basicConfig(level=logging.DEBUG)
-```
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
+4. Add tests if applicable
 5. Submit a pull request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## 🆘 Support
 
-For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review the audit logs for detailed error information
+- **Discord Server:** [Join our community](https://discord.gg/your-server)
+- **GitHub Issues:** [Report bugs](https://github.com/your-repo/issues)
+- **Documentation:** [Full docs](https://your-docs-site.com)
+
+## 🎯 Roadmap
+
+- [ ] Web dashboard for bot management
+- [ ] Mobile app for server management
+- [ ] Advanced analytics dashboard
+- [ ] Multi-panel support
+- [ ] Plugin system for custom commands
+
+---
+
+**Made with ❤️ for the Pterodactyl community**

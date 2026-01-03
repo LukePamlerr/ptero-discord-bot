@@ -494,7 +494,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 - **Discord Server:** [Join our community](https://discord.gg/4j7PDpjgCS)
-- **GitHub Issues:** [Report bugs](https://github.com/your-repo/issues)
+- **GitHub Issues:** [Report bugs](https://github.com/LukePamlerr/ptero-discord-bot/issues)
 - **Documentation:** [Full docs](https://lukepamlerr.github.io/ptero-discord-bot/)
 
 ## 🎯 Roadmap
@@ -507,4 +507,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Made with ❤️ for the Pterodactyl community**
+**Made with ❤️ by Luke!**
